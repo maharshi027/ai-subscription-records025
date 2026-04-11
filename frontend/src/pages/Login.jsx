@@ -44,7 +44,7 @@ export default function Login() {
           </button>
         </form>
         <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: '#64748b' }}>
-          No account? <Link to="/register" className="auth-link">Create one</Link>
+          If No Account? <Link to="/register" className="auth-link">Register New Account</Link>
         </p>
       </div>
     </div>

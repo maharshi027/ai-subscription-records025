@@ -101,11 +101,16 @@ export default function Subscriptions() {
 
   const addSub = async (e) => {
     e.preventDefault();
+    if (!form.name || !form.amount || !form.nextRenewalDate) {
+      alert("Please fill in all required fields (name, amount, renewal date)");
+      return;
+    }
     setAdding(true);
     try {
       await axios.post("/api/subscriptions", {
         ...form,
         amount: Number(form.amount),
+        nextRenewalDate: new Date(form.nextRenewalDate),
       });
       setForm({
         name: "",
@@ -117,7 +122,9 @@ export default function Subscriptions() {
       setShowForm(false);
       await load();
     } catch (err) {
-      alert(err.response?.data?.error || "Error adding subscription");
+      const errorMsg =
+        err.response?.data?.error || err.message || "Error adding subscription";
+      alert(errorMsg);
     }
     setAdding(false);
   };
@@ -126,7 +133,13 @@ export default function Subscriptions() {
     try {
       await axios.put(`/api/subscriptions/${id}/used`);
       await load();
-    } catch {}
+    } catch (err) {
+      alert(
+        err.response?.data?.error ||
+          err.message ||
+          "Error marking subscription",
+      );
+    }
   };
 
   const cancel = async (id, name) => {
@@ -135,7 +148,13 @@ export default function Subscriptions() {
     try {
       await axios.put(`/api/subscriptions/${id}/cancel`);
       await load();
-    } catch {}
+    } catch (err) {
+      alert(
+        err.response?.data?.error ||
+          err.message ||
+          "Error cancelling subscription",
+      );
+    }
   };
 
   const quickAdd = (sub) => {
@@ -144,7 +163,7 @@ export default function Subscriptions() {
     setForm({
       ...sub,
       amount: String(sub.amount),
-      nextRenewalDate: nextMonth.toISOString().split("T")[0],
+      nextRenewalDate: nextMonth.toISOString().split("T")[0] || "",
     });
     setShowForm(true);
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });

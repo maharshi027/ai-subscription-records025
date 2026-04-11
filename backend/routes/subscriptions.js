@@ -51,10 +51,23 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const sub = await Subscription.create({ ...req.body, user: req.user._id });
+    const { name, amount, billingCycle, category, nextRenewalDate } = req.body;
+    if (!name || !amount || !nextRenewalDate) {
+      return res.status(400).json({
+        error: "Name, amount, and renewal date are required",
+      });
+    }
+    if (isNaN(Date.parse(nextRenewalDate))) {
+      return res.status(400).json({ error: "Invalid renewal date format" });
+    }
+    const sub = await Subscription.create({
+      ...req.body,
+      user: req.user._id,
+    });
     res.status(201).json({ subscription: sub });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    const errorMsg = err.message || "Error creating subscription";
+    res.status(400).json({ error: errorMsg });
   }
 });
 

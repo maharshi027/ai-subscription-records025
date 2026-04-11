@@ -9,7 +9,6 @@ router.use(protect);
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-// Build financial context for AI
 async function buildFinancialContext(userId) {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -48,7 +47,6 @@ CURRENT MONTH FINANCIAL DATA:
 `;
 }
 
-// Chat endpoint (maintains conversation)
 router.post('/chat', async (req, res) => {
   try {
     const { messages } = req.body;
@@ -83,7 +81,6 @@ Guidelines:
   }
 });
 
-// Auto-insights endpoint
 router.get('/insights', async (req, res) => {
   try {
     const financialContext = await buildFinancialContext(req.user._id);

@@ -50,7 +50,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong", message: err.message });
 });
 
-// Connect to MongoDB and start server
 connectDB().then(() => {
   app.listen(PORT, () =>
     console.log(`🚀 Server running on http://localhost:${PORT}`),

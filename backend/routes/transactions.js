@@ -27,10 +27,27 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    const { name, amount, type, category, note } = req.body;
+    if (!name || !amount || !type) {
+      return res.status(400).json({
+        error: "Name, amount, and type are required",
+      });
+    }
+    if (isNaN(Number(amount)) || Number(amount) <= 0) {
+      return res.status(400).json({
+        error: "Amount must be a valid positive number",
+      });
+    }
+    if (type !== "income" && type !== "expense") {
+      return res.status(400).json({
+        error: "Type must be either 'income' or 'expense'",
+      });
+    }
     const txn = await Transaction.create({ ...req.body, user: req.user._id });
     res.status(201).json({ transaction: txn });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    const errorMsg = err.message || "Error creating transaction";
+    res.status(400).json({ error: errorMsg });
   }
 });
 

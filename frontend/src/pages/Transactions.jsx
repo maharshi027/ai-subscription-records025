@@ -114,7 +114,9 @@ export default function Transactions() {
       });
       await load();
     } catch (err) {
-      alert(err.response?.data?.error || "Error");
+      const errorMsg =
+        err.response?.data?.error || err.message || "Error adding transaction";
+      alert(errorMsg);
     }
     setAdding(false);
   };
@@ -125,7 +127,13 @@ export default function Transactions() {
     try {
       await axios.delete(`/api/transactions/${id}`);
       await load();
-    } catch {}
+    } catch (err) {
+      const errorMsg =
+        err.response?.data?.error ||
+        err.message ||
+        "Error deleting transaction";
+      alert(errorMsg);
+    }
     setDeleting(null);
   };
 
